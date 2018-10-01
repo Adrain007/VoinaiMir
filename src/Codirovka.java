@@ -1,12 +1,12 @@
 import java.io.*;
 import java.util.ArrayList;
 
-final class Codirovka {
+final class Encryption {
     private File file = new File("sosi.txt");
     private ArrayList<Character> alphabet = new ArrayList<>();
     private final static char[] PUNCTUATION = {'.', ',', ';', ':', '!', '?', '-','"',')','(',' '};
     private int sdvig = 1;
-    Codirovka(){ 
+    Encryption(){
         for(char c = 'а';c <= 'я'; c++){
             alphabet.add(c);
         }

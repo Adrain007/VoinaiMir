@@ -5,10 +5,10 @@ public class Main {
 
     public static void main(String [] args){
         Main main = new Main();
-        Codirovka codirovka = new Codirovka();
-        codirovka.encrypt();
-        codirovka.decrypt();
-        main.numOfHits(new File("decrypt.txt"),new File("result_voina.txt"));
+        Encryption encryption = new Encryption();
+        encryption.encrypt();
+        encryption.decrypt();
+        main.numOfHits(new File("VOINAiMIR.txt"),new File("result_voina.txt"));
         main.numOfHits(new File("encrypt.txt"),new File("result_encr.txt"));
     }
     private void numOfHits(File input,File output){
@@ -40,10 +40,10 @@ public class Main {
             for(Token token: NumOfHits){
                 n = n + token.getRepeat();
             }
-            System.out.println(n);
+            System.out.println("Всего букв в тексте: "+n);
             for(Token token: NumOfHits){
-                System.out.println(token.getName() + " : " + Math.round(token.getRepeat()/n*100)+" %");
-                writer1.write(token.getName() + " : " + Math.round(token.getRepeat()/n*100)+" %\n");
+                System.out.println(token.getName() + " : " + (token.getRepeat()/n*100)+" %");
+                writer1.write(token.getName() + " : " + (token.getRepeat()/n*100)+" %\n");
             }
             writer1.close();
             bufferedReader.close();
