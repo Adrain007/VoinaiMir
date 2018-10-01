@@ -6,7 +6,7 @@ final class Codirovka {
     private ArrayList<Character> alphabet = new ArrayList<>();
     private final static char[] PUNCTUATION = {'.', ',', ';', ':', '!', '?', '-','"',')','(',' '};
     private int sdvig = 1;
-    Codirovka(){
+    Codirovka(){ 
         for(char c = 'а';c <= 'я'; c++){
             alphabet.add(c);
         }
