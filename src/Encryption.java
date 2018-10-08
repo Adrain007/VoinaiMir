@@ -4,16 +4,12 @@ import java.util.ArrayList;
 final class Encryption {
     private File file = new File("sosi.txt");
     private ArrayList<Character> alphabet = new ArrayList<>();
-    private final static char[] PUNCTUATION = {'.', ',', ';', ':', '!', '?', '-','"',')','(',' '};
-    private int sdvig = 1;
+    private int shift = 15;
     Encryption(){
         for(char c = 'а';c <= 'я'; c++){
             alphabet.add(c);
         }
         for(char c = 'А';c <= 'Я'; c++){
-            alphabet.add(c);
-        }
-        for(char c: PUNCTUATION){
             alphabet.add(c);
         }
     }
@@ -28,16 +24,19 @@ final class Encryption {
             while((inputLine = buffer.readLine())!=null) {
                 for (int h = 0; h < inputLine.length(); h++) {
                     char c = inputLine.charAt(h);
-                    int index = alphabet.indexOf(c);
-                    index = (index + sdvig) % alphabet.size();
-                    enc.append(alphabet.get(index));
+                    if(alphabet.contains(c)) {
+                        int index = alphabet.indexOf(c);
+                        index = (index + shift) % alphabet.size();
+                        enc.append(alphabet.get(index));
+                    } else {
+                        enc.append(c);
+                    }
                 }
                 bufferedWriter.write(enc.toString()+"\r\n");
                 enc.delete(0,inputLine.length());
             }
             bufferedWriter.close();
             buffer.close();
-
         }catch (IOException e){
             e.printStackTrace();
         }
@@ -54,9 +53,13 @@ final class Encryption {
             while((inputLine = buffer.readLine())!=null) {
                 char[] mas = inputLine.toCharArray();
                 for (char c : mas) {
-                    int index = alphabet.indexOf(c);
-                    index = ((alphabet.size() + index) - sdvig) % alphabet.size();
-                    dec.append(alphabet.get(index));
+                    if(alphabet.contains(c)) {
+                        int index = alphabet.indexOf(c);
+                        index = ((alphabet.size() + index) - shift) % alphabet.size();
+                        dec.append(alphabet.get(index));
+                    } else {
+                        dec.append(c);
+                    }
                 }
                 bufferedWriter.write(dec.toString()+"\r\n");
                 dec.delete(0,inputLine.length());
