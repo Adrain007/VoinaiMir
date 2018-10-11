@@ -4,17 +4,120 @@ import java.util.HashMap;
 
 public class Main {
     public static void main(String [] args){
+        ArrayList<Token> token1,token2;
+        ArrayList<Bigramm> bigram1,bigram2;
         Main main = new Main();
         Encryption encryption = new Encryption();
         encryption.encrypt();
         encryption.decrypt();
-        /*main.numOfRepeat(new File("VOINAiMIR.txt"),new File("result_voina.txt"));
-        main.numOfRepeat(new File("encrypt.txt"),new File("result_encr.txt"));*/
-        main.bigramRepeat(new File("VOINAiMIR.txt"),new File("resBigramm.txt"));
-        main.bigramRepeat(new File("encrypt.txt"),new File("resBigEncr.txt"));
+        bigram1=main.bigramRepeat(new File("VOINAiMIR.txt"),new File("resBigramm.txt"));
+        bigram2=main.bigramRepeat(new File("encrypt.txt"),new File("resBigEncr.txt"));
+        token1=main.numOfRepeat(new File("VOINAiMIR.txt"),new File("result_voina.txt"));
+        token2=main.numOfRepeat(new File("encrypt.txt"),new File("result_encr.txt"));
+        main.decrypt(token1,token2);
+        main.bigramDecrypt(bigram1,bigram2);
+
 
     }
-    private void numOfRepeat(File input,File output){
+
+    private ArrayList<Token> sortToken (ArrayList<Token> token){
+        token.sort(new Sort());
+        for(Token tokens:token){
+            System.out.println(tokens.getRepeat()+"-" +tokens.getName());
+        }
+        return token;
+    }
+
+    private ArrayList<Bigramm> bigrammsSort(ArrayList<Bigramm> bigramms){
+        bigramms.sort(new Sort1());
+        for(Bigramm bigramm:bigramms){
+            System.out.println(bigramm.getRepeat()+"-"+bigramm.getName());
+        }
+        return bigramms;
+    }
+
+    private void bigramDecrypt(ArrayList<Bigramm> token1, ArrayList<Bigramm> token2){
+        HashMap<String,String> zamena=new HashMap<>();
+        for(int i=0;i<token2.size();i++){
+            zamena.put(token2.get(i).getName(),token1.get(i).getName());
+        }
+        try {
+            FileReader fileReader = new FileReader(new File("encrypt.txt"));
+            BufferedReader bufferedReader = new BufferedReader(fileReader);
+            FileWriter fileWriter=new FileWriter(new File("decrypt1.txt"));
+            BufferedWriter bufferedWriter=new BufferedWriter(fileWriter);
+            String line ;
+            StringBuilder builder=new StringBuilder();
+            StringBuilder out=new StringBuilder();
+            while ((line = bufferedReader.readLine())!= null) {
+                Character buf=' ';
+                line = line.toLowerCase();
+                char[] inputLine = line.toCharArray();
+                builder.append(inputLine[0]);
+                for (int i=1;i<inputLine.length;i++) {
+                    builder.append(buf);
+                    if(inputLine.length-i>1) {
+                        buf=inputLine[i];
+                        builder.append(buf); // аба
+                    }
+                    String key=builder.toString();
+                    if(zamena.containsKey(key)){
+                        out.append(zamena.get(key));
+                        out.deleteCharAt(out.length() - 1);
+                }
+                    else{
+                        out.append(key);
+                        out.deleteCharAt(out.length()-1);
+                    }
+                    builder.delete(0,builder.length());
+                }
+                bufferedWriter.write(out.toString()+"\r\n");
+                out.delete(0,line.length());
+            }
+            bufferedReader.close();
+            bufferedWriter.close();
+        }
+        catch (IOException e){
+            e.printStackTrace();
+        }
+    }
+
+    private void decrypt (ArrayList<Token> token1, ArrayList<Token> token2){
+        HashMap<Character,Character> zamena=new HashMap<>();
+        for(int i=0;i<token1.size();i++){
+            zamena.put(token2.get(i).getName(),token1.get(i).getName());
+        }
+        try {
+            FileReader fileReader = new FileReader(new File("encrypt.txt"));
+            BufferedReader bufferedReader = new BufferedReader(fileReader);
+            FileWriter fileWriter=new FileWriter(new File("decrypt.txt"));
+            BufferedWriter bufferedWriter=new BufferedWriter(fileWriter);
+            String line ;
+            StringBuilder builder=new StringBuilder();
+            while ((line = bufferedReader.readLine())!= null) {
+                line = line.toLowerCase();
+                char[] inputLine = line.toCharArray();
+                for (char anInputLine : inputLine) {
+                    if(zamena.containsKey(anInputLine)){
+                        builder.append(zamena.get(anInputLine));
+                    }
+                    else{
+                        builder.append(anInputLine);
+                    }
+                }
+                bufferedWriter.write(builder.toString()+"\r\n");
+                builder.delete(0,line.length());
+            }
+            bufferedReader.close();
+            bufferedWriter.close();
+        }
+        catch (IOException e){
+            e.printStackTrace();
+        }
+
+    }
+
+    private ArrayList <Token> numOfRepeat(File input,File output){
         HashMap<Character,Token> NumOfRepeat = new HashMap<>();
         initAlph(NumOfRepeat);
         try {
@@ -40,7 +143,6 @@ public class Main {
 
             System.out.println("Всего букв в тексте: "+count);
             for(Token token: NumOfRepeat.values()){
-                System.out.println(token.getName() + " : " + (token.getRepeat()/count*100)+" %");
                 writer1.write(token.getName() + " : " + (token.getRepeat()/count*100)+" %\r\n");
             }
             writer1.close();
@@ -49,6 +151,7 @@ public class Main {
         } catch (IOException e){
             e.printStackTrace();
         }
+        return sortToken(new ArrayList<>(NumOfRepeat.values()));
     }
     private void initAlph(HashMap<Character, Token> map) {
         for (char c = 'а'; c <= 'я'; c++) {
@@ -63,7 +166,7 @@ public class Main {
         }
         return n;
     }
-    private void bigramRepeat(File input,File output){
+    private ArrayList<Bigramm> bigramRepeat(File input,File output){
         HashMap<String,Bigramm> bigramRepeat = new HashMap<>();
         ArrayList<Character> alph = new ArrayList<>();
         float count = 0;
@@ -102,7 +205,6 @@ public class Main {
             BufferedWriter writer1 = new BufferedWriter(writer);
             System.out.println("Всего биграмм = "+count);
             for(Bigramm bigramm: bigramRepeat.values()){
-                System.out.println(bigramm.getName()+" : "+(bigramm.getRepeat()/count)*100+" %");
                 writer1.write(bigramm.getName()+" : "+(bigramm.getRepeat()/count)*100+"% \r\n");
             }
             writer1.close();
@@ -111,6 +213,7 @@ public class Main {
         } catch (IOException e){
             e.printStackTrace();
         }
+        return bigrammsSort(new ArrayList<>(bigramRepeat.values()));
     }
 
 }

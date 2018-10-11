@@ -1,13 +1,13 @@
 class Bigramm {
 
-    private float repeat;
+    private int repeat;
     private String name;
 
     Bigramm(int repeat, String name){
         this.name = name;
         this.repeat = repeat;
     }
-    float getRepeat(){
+    int getRepeat(){
         return repeat;
     }
 
@@ -15,7 +15,7 @@ class Bigramm {
         return name;
     }
 
-    void setRepeat(float repeat) {
+    void setRepeat(int  repeat) {
         this.repeat = repeat;
     }
 }

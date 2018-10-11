@@ -1,13 +1,13 @@
 public class Token {
 
-    private float repeat;
+    private int  repeat;
     private char name;
 
     Token(int repeat, char name){
         this.name = name;
         this.repeat = repeat;
     }
-    public float getRepeat(){
+    public int getRepeat(){
         return repeat;
     }
 
@@ -15,7 +15,7 @@ public class Token {
         return name;
     }
 
-    public void setRepeat(float repeat) {
+    public void setRepeat(int repeat) {
         this.repeat = repeat;
     }
 }
