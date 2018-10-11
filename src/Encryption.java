@@ -2,7 +2,7 @@ import java.io.*;
 import java.util.ArrayList;
 
 final class Encryption {
-    private File file = new File("sosi.txt");
+    private File file = new File("source.txt");
     private ArrayList<Character> alphabet = new ArrayList<>();
     private int shift = 15;
     Encryption(){
