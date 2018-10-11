@@ -9,7 +9,6 @@ public class Main {
         Main main = new Main();
         Encryption encryption = new Encryption();
         encryption.encrypt();
-        encryption.decrypt();
         bigram1=main.bigramRepeat(new File("VOINAiMIR.txt"),new File("resBigramm.txt"));
         bigram2=main.bigramRepeat(new File("encrypt.txt"),new File("resBigEncr.txt"));
         token1=main.numOfRepeat(new File("VOINAiMIR.txt"),new File("result_voina.txt"));
