@@ -41,33 +41,4 @@ final class Encryption {
             e.printStackTrace();
         }
     }
-
-    void decrypt(){
-        try {
-            FileReader fReader = new FileReader("encrypt.txt");
-            BufferedReader buffer = new BufferedReader(fReader);
-            String inputLine;
-            FileWriter fileWriter = new FileWriter("decrypt.txt");
-            BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
-            StringBuilder dec = new StringBuilder();
-            while((inputLine = buffer.readLine())!=null) {
-                char[] mas = inputLine.toCharArray();
-                for (char c : mas) {
-                    if(alphabet.contains(c)) {
-                        int index = alphabet.indexOf(c);
-                        index = ((alphabet.size() + index) - shift) % alphabet.size();
-                        dec.append(alphabet.get(index));
-                    } else {
-                        dec.append(c);
-                    }
-                }
-                bufferedWriter.write(dec.toString()+"\r\n");
-                dec.delete(0,inputLine.length());
-            }
-            buffer.close();
-            bufferedWriter.close();
-        }catch (IOException e){
-            e.printStackTrace();
-        }
-    }
 }
