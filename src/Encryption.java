@@ -41,4 +41,36 @@ final class Encryption {
             e.printStackTrace();
         }
     }
+    void procent(File file,File file1){
+        try {
+            FileReader fReader = new FileReader(file);
+            BufferedReader buffer = new BufferedReader(fReader);
+            FileReader fReader1 = new FileReader(file1);
+            BufferedReader buffer1 = new BufferedReader(fReader1);
+            String inputLine;
+            String inputLine1;
+            float count = 0;
+            float countAll = 0;
+            while((inputLine = buffer.readLine())!=null) {
+                inputLine = inputLine.toLowerCase();
+                inputLine1 = buffer1.readLine();
+                for (int h = 0; h < inputLine.length(); h++) {
+                    char c = inputLine.charAt(h);
+                    char d = inputLine1.charAt(h);
+                    if(alphabet.contains(c)) {
+                        if(c==d) {
+                            count++;
+                        }
+                        countAll++;
+                    }
+                }
+            }
+            buffer1.close();
+            buffer.close();
+            System.out.println("Процент = "+count/countAll*100+" %");
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+    }
+
 }

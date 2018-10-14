@@ -1,22 +1,23 @@
+import com.sun.istack.internal.NotNull;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Main {
+
     public static void main(String [] args){
         ArrayList<Token> token1,token2;
         ArrayList<Bigramm> bigram1,bigram2;
         Main main = new Main();
         Encryption encryption = new Encryption();
         encryption.encrypt();
-        bigram1=main.bigramRepeat(new File("VOINAiMIR.txt"),new File("resBigramm.txt"));
-        bigram2=main.bigramRepeat(new File("encrypt.txt"),new File("resBigEncr.txt"));
-        token1=main.numOfRepeat(new File("VOINAiMIR.txt"),new File("result_voina.txt"));
-        token2=main.numOfRepeat(new File("encrypt.txt"),new File("result_encr.txt"));
+        bigram1 = main.bigramRepeat(new File("VOINAiMIR.txt"),new File("resBigramm.txt"));
+        bigram2 = main.bigramRepeat(new File("decrypt.txt"),new File("resBigEncr.txt"));
+        token1 = main.numOfRepeat(new File("VOINAiMIR.txt"),new File("result_voina.txt"));
+        token2 = main.numOfRepeat(new File("encrypt.txt"),new File("result_encr.txt"));
         main.decrypt(token1,token2);
         main.bigramDecrypt(bigram1,bigram2);
-
-
+        encryption.procent(new File("decrypt12.txt"),new File("source.txt"));
     }
 
     private ArrayList<Token> sortToken (ArrayList<Token> token){
@@ -29,7 +30,7 @@ public class Main {
 
     private ArrayList<Bigramm> bigrammsSort(ArrayList<Bigramm> bigramms){
         bigramms.sort(new Sort1());
-        for(Bigramm bigramm:bigramms){
+        for(Bigramm bigramm: bigramms){
             System.out.println(bigramm.getRepeat()+"-"+bigramm.getName());
         }
         return bigramms;
@@ -37,54 +38,64 @@ public class Main {
 
     private void bigramDecrypt(ArrayList<Bigramm> token1, ArrayList<Bigramm> token2){
         HashMap<String,String> zamena=new HashMap<>();
-        for(int i=0;i<token2.size();i++){
+        ArrayList<Character> alph = new ArrayList<>();
+        for(char c = 'а';c<='я';c++){
+            alph.add(c);
+        }
+        for(int i=0;i<10;i++){
             zamena.put(token2.get(i).getName(),token1.get(i).getName());
+            System.out.println(token2.get(i).getName()+" - "+token1.get(i).getName());
         }
         try {
-            FileReader fileReader = new FileReader(new File("encrypt.txt"));
+            FileReader fileReader = new FileReader(new File("decrypt.txt"));
             BufferedReader bufferedReader = new BufferedReader(fileReader);
             FileWriter fileWriter=new FileWriter(new File("decrypt1.txt"));
             BufferedWriter bufferedWriter=new BufferedWriter(fileWriter);
             String line ;
             StringBuilder builder=new StringBuilder();
             StringBuilder out=new StringBuilder();
-            while ((line = bufferedReader.readLine())!= null) {
-                Character buf=' ';
+            while ((line = bufferedReader.readLine())!=null) {
                 line = line.toLowerCase();
                 char[] inputLine = line.toCharArray();
-                builder.append(inputLine[0]);
-                for (int i=1;i<inputLine.length;i++) {
-                    builder.append(buf);
-                    if(inputLine.length-i>1) {
-                        buf=inputLine[i];
-                        builder.append(buf); // аба
+                for(int h=0;h<line.length();h++){
+                    char cur = inputLine[h];
+                    char next;
+                    if(h<line.length()-1) {
+                        next = inputLine[h + 1];
+                    }else {
+                        out.append(cur);
+                        break;
                     }
-                    String key=builder.toString();
-                    if(zamena.containsKey(key)){
-                        out.append(zamena.get(key));
-                        out.deleteCharAt(out.length() - 1);
-                }
-                    else{
-                        out.append(key);
-                        out.deleteCharAt(out.length()-1);
+                    if(alph.contains(cur)&&alph.contains(next)){
+                        builder.append(cur);
+                        builder.append(next);
+                        if(zamena.containsKey(builder.toString())){
+                            out.append(zamena.get(builder.toString()));
+                            if(h!=line.length()-2){
+                                out.deleteCharAt(out.length()-1);
+                            }
+                        }else{
+                            out.append(cur);
+                        }
+                    }else {
+                        out.append(cur);
                     }
                     builder.delete(0,builder.length());
                 }
                 bufferedWriter.write(out.toString()+"\r\n");
-                out.delete(0,line.length());
+                out.delete(0,out.length());
             }
-            bufferedReader.close();
-            bufferedWriter.close();
         }
-        catch (IOException e){
+        catch (Exception e){
             e.printStackTrace();
         }
     }
 
-    private void decrypt (ArrayList<Token> token1, ArrayList<Token> token2){
+    private void decrypt (@NotNull ArrayList<Token> token1, ArrayList<Token> token2){
         HashMap<Character,Character> zamena=new HashMap<>();
         for(int i=0;i<token1.size();i++){
             zamena.put(token2.get(i).getName(),token1.get(i).getName());
+            System.out.println(token2.get(i).getName()+" - "+token1.get(i).getName());
         }
         try {
             FileReader fileReader = new FileReader(new File("encrypt.txt"));
@@ -158,7 +169,7 @@ public class Main {
         }
     }
 
-    private float counter(HashMap<Character,Token> map){
+    private float counter(@NotNull HashMap<Character,Token> map){
         float n = 0;
         for(Token token: map.values()){
             n = n + token.getRepeat();
@@ -216,4 +227,3 @@ public class Main {
     }
 
 }
-
