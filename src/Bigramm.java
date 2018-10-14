@@ -27,6 +27,9 @@ class Bigramm {
 
     private ArrayList<Bigramm> bigrammsSort(ArrayList<Bigramm> bigramms){
         bigramms.sort(new Sort1());
+        /*for(Bigramm bigramm: bigramms){
+            System.out.println(bigramm.getName()+" - "+bigramm.getRepeat());
+        }*/
         return bigramms;
     }
 
@@ -71,21 +74,18 @@ class Bigramm {
         return bigrammsSort(new ArrayList<>(bigramRepeat.values()));
     }
 
-
-    void bigramDecrypt(ArrayList<Bigramm> token1, ArrayList<Bigramm> token2,File input){
-        HashMap<String,String> zamena=new HashMap<>();
+    /*void bigramDecrypt1(File token1, File token2,File input, File output){
+        HashMap<String,String> zamena = correspondenceTable(token1,token2);
+        Token token = new Token();
+        HashMap<Character,Character> replace = token.correspondenceTable(new File("VOINAiMIR.txt"),new File("encrypt.txt"));
         ArrayList<Character> alph = new ArrayList<>();
         for(char c = 'а';c<='я';c++){
             alph.add(c);
         }
-        for(int i=0;i<5;i++){
-            zamena.put(token2.get(i).getName(),token1.get(i).getName());
-            System.out.println(token2.get(i).getName()+" - "+token1.get(i).getName());
-        }
         try {
             FileReader fileReader = new FileReader(input);
             BufferedReader bufferedReader = new BufferedReader(fileReader);
-            FileWriter fileWriter=new FileWriter(new File("decrypt1.txt"));
+            FileWriter fileWriter=new FileWrit er(output);
             BufferedWriter bufferedWriter=new BufferedWriter(fileWriter);
             String line ;
             StringBuilder builder=new StringBuilder();
@@ -111,6 +111,8 @@ class Bigramm {
                         }else{
                             out.append(cur);
                         }
+                    }else if(alph.contains(cur)&&!alph.contains(next)) {
+                        out.append(replace.get(cur));
                     }else {
                         out.append(cur);
                     }
@@ -125,5 +127,87 @@ class Bigramm {
         catch (Exception e){
             e.printStackTrace();
         }
+    }*/
+
+    public HashMap<String,String> correspondenceTable (File Voina_i_Mir,File bigDec){
+        ArrayList<Bigramm> bigram1,bigram2;
+        bigram1 = bigramRepeat(Voina_i_Mir);
+        bigram2 = bigramRepeat(bigDec);
+        HashMap<String,String> zamena = new HashMap<>();
+        for(int i=0;i<bigram2.size();i++){
+            zamena.put(bigram2.get(i).getName(),bigram1.get(i).getName());
+            System.out.println(bigram2.get(i).getName()+" - "+bigram1.get(i).getName());
+        }
+        return zamena;
+    }
+
+    void bigramDecrypt(File token1, File token2, File input, File output){
+        HashMap<String,String> zamena = correspondenceTable(token1,token2);
+        ArrayList<Character> alph = new ArrayList<>();
+        for(char c = 'а';c<='я';c++){
+            alph.add(c);
+        }
+        Token token = new Token();
+
+        HashMap<Character,Character> replace = token.correspondenceTable(token1,token2);
+        HashMap<String,Integer> map = new HashMap<>();
+        StringBuilder builder = new StringBuilder();
+
+        for(String in: zamena.keySet()){
+            char first = in.charAt(0);
+            char second = in.charAt(1);
+            String z = zamena.get(in);
+            char [] mas = z.toCharArray();
+            builder.append(first);
+            builder.append(mas[0]);
+            if(!map.containsKey(builder.toString())){
+                map.put(builder.toString(),1);
+            }else {
+                map.put(builder.toString(),map.get(builder.toString())+1);
+            }
+            builder.delete(0,builder.length());
+            builder.append(second);
+            builder.append(mas[1]);
+            if(!map.containsKey(builder.toString())){
+                map.put(builder.toString(),1);
+            }else {
+                map.put(builder.toString(),map.get(builder.toString())+1);
+            }
+            builder.delete(0,builder.length());
+        }
+        /*int max = 0;
+        String maximum=null;
+        ArrayList<String> masEl = new ArrayList<>();
+
+        for (char v ='а';v<='я';v++) {
+            for(char c ='а';c<='я';c++) {
+                builder.append(v);
+                builder.append(c);
+                if(map.containsKey(builder.toString())){
+                    if(map.get(builder.toString())>max) {
+                        max = map.get(builder.toString());
+                        maximum = builder.toString();
+
+                    }
+                }
+                builder.delete(0, builder.length());
+            }
+            max=0;
+            masEl.add(maximum);
+        }*/
+        for(String in: map.keySet()){
+            System.out.println(in+" -- "+map.get(in));
+            char first = in.charAt(0);
+            char second = in.charAt(1);
+            if(map.get(in)>=6){
+                replace.put(first,second);
+            }
+        }
+
+        System.out.println("\n///////////////////////////\n");
+        for(Character char1: replace.keySet()){
+            System.out.println(char1.toString()+" - "+replace.get(char1));
+        }
+        token.decrypt(input,output,replace);
     }
 }

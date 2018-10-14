@@ -32,16 +32,24 @@ public class Token {
         return token;
     }
 
-    public void decrypt (@NotNull ArrayList<Token> token1, ArrayList<Token> token2){
-        HashMap<Character,Character> zamena=new HashMap<>();
+    public HashMap<Character,Character> correspondenceTable (File Voina_i_Mir,File tokenDec){
+        ArrayList<Token> token1,token2;
+        token1 = numOfRepeat(Voina_i_Mir);
+        token2 = numOfRepeat(tokenDec);
+        HashMap<Character,Character> zamena = new HashMap<>();
         for(int i=0;i<token1.size();i++){
             zamena.put(token2.get(i).getName(),token1.get(i).getName());
             System.out.println(token2.get(i).getName()+" - "+token1.get(i).getName());
         }
+        return zamena;
+    }
+
+    public void decrypt (File input, File output, HashMap zamena1){
+        HashMap<Character,Character> zamena = zamena1;
         try {
-            FileReader fileReader = new FileReader(new File("encrypt.txt"));
+            FileReader fileReader = new FileReader(input);
             BufferedReader bufferedReader = new BufferedReader(fileReader);
-            FileWriter fileWriter=new FileWriter(new File("decrypt.txt"));
+            FileWriter fileWriter=new FileWriter(output);
             BufferedWriter bufferedWriter=new BufferedWriter(fileWriter);
             String line ;
             StringBuilder builder=new StringBuilder();

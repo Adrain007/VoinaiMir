@@ -44,6 +44,10 @@ final class Encryption {
         }
     }
     void procent(File file,File file1){
+        ArrayList<Character> alphabet = new ArrayList<>();
+        for(char c = 'а';c <= 'я'; c++){
+            alphabet.add(c);
+        }
         try {
             FileReader fReader = new FileReader(file);
             BufferedReader buffer = new BufferedReader(fReader);
