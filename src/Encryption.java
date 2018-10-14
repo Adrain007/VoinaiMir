@@ -2,10 +2,12 @@ import java.io.*;
 import java.util.ArrayList;
 
 final class Encryption {
-    private File file = new File("source.txt");
+    private File file ;
     private ArrayList<Character> alphabet = new ArrayList<>();
-    private int shift = 15;
-    Encryption(){
+    private int shift;
+    Encryption(File file, int shift){
+        this.file = file;
+        this.shift = shift;
         for(char c = 'а';c <= 'я'; c++){
             alphabet.add(c);
         }
